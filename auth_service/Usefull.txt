@@ -1,0 +1,17 @@
+Usefull info:
+-To test it:
+    docker build -t myauthapp .
+    docker run -p 5000:5000 myauthapp
+
+    Demo:
+    Admin logs in and sends a POST request to /login with the admin's username and password. H
+    curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"adminpassword"}' http://localhost:5000/login
+    This should return a JWT in the response,eg:
+        {"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTYxMzgwNzc2MywiZXhwIjoxNjEzODA5NTYzfQ.YHYWjy7QcwCeNnuLMLT3sQEgQ5rFoFj8aeXD8zp-80U"}
+    Admin creates a new user:
+        Sends a POST request to /user with the new user's data and the JWT in the Authorization header. 
+            curl -X POST -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODQ5MzA5MzksImV4cCI6MTY4NDkzMjczOX0.EZSt4AlpPOR5veYAcZS72sYwECryA06NiTBhwCqO9pk" -d '{"username":"newuser", "password":"newpassword", "email":"newuser@example.com", "role":"user"}' http://localhost:5000/user
+    The new user logs in:
+
+        Sends a POST request to /login with the new user's username and password:
+            curl -X POST -H "Content-Type: application/json" -d '{"username":"newuser", "password":"newpassword"}' http://localhost:5000/login
