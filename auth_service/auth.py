@@ -53,6 +53,12 @@ def create_user(current_user):
         return jsonify({'message': 'Cannot perform that function!'})
 
     data = request.get_json()
+    
+    # Check if a user with the given username already exists
+    existing_user = User.query.filter_by(username=data['username']).first()
+    if existing_user:
+        return jsonify({'message': 'Username already exists!'})
+
     hashed_password = generate_password_hash(data['password'], method='sha256')
     new_user = User(username=data['username'], password=hashed_password, email=data['email'], role=data['role'])
     db.session.add(new_user)
