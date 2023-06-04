@@ -18,3 +18,8 @@ Usefull info:
 
     Delete User:
         curl -X DELETE -H "Content-Type: application/json" -H "x-access-tokens: your_token_here" http://localhost:5000/user/username_to_delete
+
+
+For development:
+print database: 
+    curl -X GET http://localhost:5000/print

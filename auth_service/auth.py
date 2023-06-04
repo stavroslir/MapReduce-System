@@ -63,7 +63,6 @@ def create_user(current_user):
     new_user = User(username=data['username'], password=hashed_password, email=data['email'], role=data['role'])
     db.session.add(new_user)
     db.session.commit()
-    print_db()
     return jsonify({'message': 'New user created!'})
 
 @app.route('/user/<username>', methods=['DELETE'])
@@ -81,10 +80,20 @@ def delete_user(current_user, username):
 
     return jsonify({'message': 'User has been deleted!'})
 
-def print_db():
-    users = User.query.all()  # This line fetches all records from the User table
+
+@app.route('/print', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    user_list = []
     for user in users:
-        print(f'ID: {user.id}, Username: {user.username}, Email: {user.email}, Role: {user.role}')
+        user_data = {
+            'ID': user.id, 
+            'Username': user.username, 
+            'Email': user.email, 
+            'Role': user.role
+        }
+        user_list.append(user_data)
+    return jsonify(user_list)
 
 
 
@@ -96,5 +105,4 @@ if __name__ == '__main__':
         new_user = User(username="admin", password=hashed_password, email="admin@example.com", role="admin")
         db.session.add(new_user)
         db.session.commit()
-        print_db()
     app.run(host='0.0.0.0', port=5000)

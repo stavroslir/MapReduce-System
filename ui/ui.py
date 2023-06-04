@@ -3,8 +3,8 @@ import requests
 
 app = Flask(__name__)
 
-AUTH_SERVICE_URL = 'localhost:5000'  # Replace with the URL of your Authentication Service
-MONITOR_SERVICE_URL = 'http://monitor_service:6000'  # Replace with the URL of your Monitoring Service
+AUTH_SERVICE_URL = 'http://172.17.0.2:5000'  # Replace with the URL of your Authentication Service
+MONITOR_SERVICE_URL = 'http://localhost:6000'  # Replace with the URL of your Monitoring Service
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -15,8 +15,21 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    response = requests.post(f'{AUTH_SERVICE_URL}/user', json=data)
+    headers = {'x-access-tokens': request.headers.get('x-access-tokens')}
+    response = requests.post(f'{AUTH_SERVICE_URL}/user', headers=headers, json=data)
     return jsonify(response.json()), response.status_code
+
+@app.route('/delete_user/<username>', methods=['DELETE'])
+def delete_user(username):
+    token = request.headers.get('x-access-tokens')
+    if not token:
+        return jsonify({'message': 'Token is missing'}), 401
+
+    headers = {'x-access-tokens': token}
+    response = requests.delete(f'{AUTH_SERVICE_URL}/user/{username}', headers=headers)
+
+    return jsonify(response.json()), response.status_code
+
 
 @app.route('/submit_job', methods=['POST'])
 def submit_job():

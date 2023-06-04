@@ -10,7 +10,3 @@ class Job(db.Model):
     description = db.Column(db.String(120), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-def init_app(app):
-    db.init_app(app)
-    with app.app_context():
-        db.create_all()  

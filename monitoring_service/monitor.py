@@ -3,7 +3,6 @@ from database import db, Job, init_app
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-init_app(app)
 
 @app.route('/job', methods=['POST'])
 def submit_job():
@@ -20,4 +19,7 @@ def view_jobs():
     return jsonify([{'job_id': job.id, 'status': job.status, 'user_id': job.user_id, 'description': job.description} for job in jobs])
 
 if __name__ == '__main__':
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()  
     app.run(host='0.0.0.0', port=6000)
