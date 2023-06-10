@@ -13,5 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Make port 6000 available to the world outside this container
 EXPOSE 6000
 
+# Define environment variable
+ENV NAME Master
+
 # Run monitor.py when the container launches
 CMD ["python", "monitor.py"]

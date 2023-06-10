@@ -17,7 +17,7 @@ build:
 
 # This target runs the Docker image, in case you want to execute it as well
 run:
-	docker run -it --rm -p $(HOST_PORT):$(CONTAINER_PORT) $(IMAGE_NAME):$(VERSION)
+	docker run -p $(HOST_PORT):$(CONTAINER_PORT) $(IMAGE_NAME):$(VERSION)
 
 # This target pushes the Docker image to DockerHub
 push:

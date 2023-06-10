@@ -10,6 +10,6 @@ Fake master:
         MAP:
             curl -X POST -H "Content-Type: application/json" -d '{"task_type": "MAP", "input_path": "/app/test", "output_path": "/app/out.txt"}' http://localhost:8080/assign_task
         SHUFFLE:
-            curl -X POST -H "Content-Type: application/json" -d '{"task_type": "MAP", "input_path": "/app/test", "output_path": "/app/out.txt"}' http://localhost:8080/assig"SHUFFLE", "input_path":"/app/out.txt", "output_path":"/app/shuffle_output"}' http://localhost:8080/assign_task
+            curl -X POST -H "Content-Type: application/json" -d '{"task_type": "SHUFFLE", "input_path":"/app/out.txt", "output_path":"/app/shuffle_output"}' http://localhost:8080/assign_task
         REDUCE:
             curl -X POST -H "Content-Type: application/json" -d '{"task_type":"REDUCE", "input_path":"/app/shuffle_output", "output_path":"/app/reduce_output"}' http://localhost:8080/assign_task
