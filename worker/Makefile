@@ -1,12 +1,12 @@
 # Define the name of the image you want to build
-IMAGE_NAME = worker
+IMAGE_NAME = worker2
 
 # Define the version for the docker image
 VERSION = latest
 
 # Define the ports
-CONTAINER_PORT = 50051
-HOST_PORT = 50051
+CONTAINER_PORT = 50052
+HOST_PORT = 50052
 
 # This is the default target, which will be executed when you run `make` or `make build`
 all: build

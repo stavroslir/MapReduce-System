@@ -1,0 +1,5 @@
+First, login as admin:
+    curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"adminpassword"}' http://localhost:7000/login
+
+Then, register workers:
+    

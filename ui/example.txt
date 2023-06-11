@@ -5,7 +5,7 @@ This should return a JWT in the response,eg:
 {"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTYxMzgwNzc2MywiZXhwIjoxNjEzODA5NTYzfQ.YHYWjy7QcwCeNnuLMLT3sQEgQ5rFoFj8aeXD8zp-80U"}
 
 
-curl -X POST http://localhost:7000/register -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODU4OTQxNDIsImV4cCI6MTY4NTg5NTk0Mn0.-MUfjjeqLllpKwwDDDLkAC_v20gzQpil6LYMfnNW61g" -d '{"username": "new_user", "password": "new_password", "email": "new_user@example.com", "role": "user"}'
+curl -X POST http://localhost:7000/register -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODY0OTQyNDksImV4cCI6MTY4NjQ5NjA0OX0.kdvqFjiGPmNH7brdOmgN6FVOMFIAE0VUB7M7DkFVt_k" -d '{"username": "new_user", "password": "new_password", "email": "new_user@example.com", "role": "user"}'
 This command sends a POST request to the /register endpoint of the UI Service with the necessary data to create a new user. The UI Service then forwards this request to the Authentication Service, which actually creates the user.
 
 Next, the new user wants to log in and create a job. The first step is to obtain an authentication token by logging in:
@@ -23,4 +23,4 @@ This command sends a POST request to the /submit_job endpoint of the UI Service,
 
 If you want to delete a user(as an admin always):
 Delete User:
-    curl -X DELETE -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODU4OTM3NDIsImV4cCI6MTY4NTg5NTU0Mn0.pNcev6sEymWHLoHuxedGRA8UdBvPOjGtxTuYRTCF_VI" http://localhost:5000/user/new_user
+    curl -X DELETE -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZXdfdXNlciIsInJvbGUiOiJ1c2VyIiwiZW1haWwiOiJuZXdfdXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTY4NjQ5NDMzMCwiZXhwIjoxNjg2NDk2MTMwfQ.PLHqShfqqwTLLo4Gmok3C70IitPAJDJcjf2oHRJslqI" http://localhost:5000/user/new_user

@@ -47,7 +47,6 @@ def login():
     return jsonify({'token': token})
 
 @app.route('/user', methods=['POST'])
-@token_required
 def create_user(current_user):
     if current_user.role != 'admin':
         return jsonify({'message': 'Cannot perform that function!'})
@@ -78,25 +77,17 @@ def delete_user(current_user, username):
     db.session.delete(user)
     db.session.commit()
 
-    return jsonify({'message': 'User has been deleted!'})
+    return jsonify({'message': 'The user has been deleted!'})
 
+@app.route('/validate_token', methods=['GET'])
+def validate_token():
+    token = request.headers.get('x-access-tokens')
+    try:
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+    except:
+        return jsonify({'valid': False, 'role': None})
 
-@app.route('/print', methods=['GET'])
-def get_users():
-    users = User.query.all()
-    user_list = []
-    for user in users:
-        user_data = {
-            'ID': user.id, 
-            'Username': user.username, 
-            'Email': user.email, 
-            'Role': user.role
-        }
-        user_list.append(user_data)
-    return jsonify(user_list)
-
-
-
+    return jsonify({'valid': True, 'role': data['role']})
 
 if __name__ == '__main__':
     with app.app_context(): # Add this line
