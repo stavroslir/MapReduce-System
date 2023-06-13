@@ -47,10 +47,8 @@ def login():
     return jsonify({'token': token})
 
 @app.route('/user', methods=['POST'])
-def create_user(current_user):
-    if current_user.role != 'admin':
-        return jsonify({'message': 'Cannot perform that function!'})
-
+def create_user():
+    
     data = request.get_json()
     
     # Check if a user with the given username already exists
@@ -65,10 +63,7 @@ def create_user(current_user):
     return jsonify({'message': 'New user created!'})
 
 @app.route('/user/<username>', methods=['DELETE'])
-@token_required
-def delete_user(current_user, username):
-    if current_user.role != 'admin':
-        return jsonify({'message': 'Cannot perform that function!'})
+def delete_user( username):
 
     user = User.query.filter_by(username=username).first()
     if not user:
@@ -96,4 +91,4 @@ if __name__ == '__main__':
         new_user = User(username="admin", password=hashed_password, email="admin@example.com", role="admin")
         db.session.add(new_user)
         db.session.commit()
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=4002)

@@ -76,7 +76,7 @@ class Worker(worker_pb2_grpc.WorkerServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     worker_pb2_grpc.add_WorkerServicer_to_server(Worker(), server)
-    server.add_insecure_port('0.0.0.0:50052')
+    server.add_insecure_port('0.0.0.0:5005')
     server.start()
     try:
         while True:

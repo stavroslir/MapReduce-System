@@ -2,24 +2,38 @@ from flask import Flask, request, jsonify
 import requests
 
 app = Flask(__name__)
-AUTH_SERVICE_URL = 'http://172.17.0.3:5000'
-MONITOR_SERVICE_URL = 'http://172.17.0.4:6000'
+AUTH_SERVICE_URL = 'http://172.17.0.2:4002'
+MONITOR_SERVICE_URL = 'http://172.17.0.3:4003'
 
 @app.route('/register', methods=['POST'])
 def register():
+
     data = request.get_json()
-    headers = {'x-access-tokens': request.headers.get('x-access-tokens')}
-    response = requests.post(f'{AUTH_SERVICE_URL}/user', headers=headers, json=data)
-    return jsonify(response.json()), response.status_code
+    token = request.headers.get('x-access-tokens')
+    headers = {'x-access-tokens': token}
+
+    # Validate token before forwarding request
+    validation_response = requests.get(f'{AUTH_SERVICE_URL}/validate_token', headers=headers)
+    validation_data = validation_response.json()
+
+    if validation_data.get('valid'):
+        response = requests.post(f'{AUTH_SERVICE_URL}/user', headers=headers, json=data)
+
+        return jsonify(response.json()), response.status_code
+    return jsonify({'message': 'Token is invalid.'}), 401
 
 @app.route('/delete_user/<username>', methods=['DELETE'])
 def delete_user(username):
-    token = request.headers.get('x-access-tokens')
-    if not token:
-        return jsonify({'message': 'Token is missing'}), 401
 
+    token = request.headers.get('x-access-tokens')
     headers = {'x-access-tokens': token}
-    response = requests.delete(f'{AUTH_SERVICE_URL}/user/{username}', headers=headers)
+
+    # Validate token before forwarding request
+    validation_response = requests.get(f'{AUTH_SERVICE_URL}/validate_token', headers=headers)
+    validation_data = validation_response.json()
+
+    if validation_data.get('valid'):
+        response = requests.delete(f'{AUTH_SERVICE_URL}/user/{username}', headers=headers)
 
     return jsonify(response.json()), response.status_code
 
@@ -31,6 +45,8 @@ def login():
 
 @app.route('/submit_job', methods=['POST'])
 def submit_job():
+
+    data = request.get_json()
     token = request.headers.get('x-access-tokens')
     if not token:
         return jsonify({'message': 'Token is missing'}), 401
@@ -116,4 +132,4 @@ def view_workers():
     return jsonify({'message': 'Token is invalid.'}), 401
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=7000)
+    app.run(host='0.0.0.0', port=4001)

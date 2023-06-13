@@ -5,8 +5,8 @@ IMAGE_NAME = auth
 VERSION = latest
 
 # Define the ports
-CONTAINER_PORT = 5000
-HOST_PORT = 5000
+CONTAINER_PORT = 4002
+HOST_PORT = 4002
 
 # This is the default target, which will be executed when you run `make` or `make build`
 all: build

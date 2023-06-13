@@ -5,8 +5,8 @@ IMAGE_NAME = ui
 VERSION = latest
 
 # Define the ports
-CONTAINER_PORT = 7000
-HOST_PORT = 7000
+CONTAINER_PORT = 4001
+HOST_PORT = 4001
 
 # This is the default target, which will be executed when you run `make` or `make build`
 all: build

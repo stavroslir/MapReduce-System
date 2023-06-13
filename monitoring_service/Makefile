@@ -5,8 +5,8 @@ IMAGE_NAME = monitor
 VERSION = latest
 
 # Define the ports
-CONTAINER_PORT = 6000
-HOST_PORT = 6000
+CONTAINER_PORT = 4003
+HOST_PORT = 4003
 
 # This is the default target, which will be executed when you run `make` or `make build`
 all: build

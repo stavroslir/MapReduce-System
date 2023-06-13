@@ -5,8 +5,8 @@ IMAGE_NAME = worker2
 VERSION = latest
 
 # Define the ports
-CONTAINER_PORT = 50052
-HOST_PORT = 50052
+CONTAINER_PORT = 5005
+HOST_PORT = 5005
 
 # This is the default target, which will be executed when you run `make` or `make build`
 all: build
@@ -17,7 +17,7 @@ build:
 
 # This target runs the Docker image, in case you want to execute it as well
 run:
-	docker run -v /home/stavros/Desktop/Vsam-Project/worker:/app -p $(HOST_PORT):$(CONTAINER_PORT) $(IMAGE_NAME):$(VERSION)
+	docker run -v /Users/stavroslironis/Desktop/MapReduce-System/worker:/app -p $(HOST_PORT):$(CONTAINER_PORT) $(IMAGE_NAME):$(VERSION)
 
 # This target pushes the Docker image to DockerHub
 push:
