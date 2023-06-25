@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alice
+  labels:
+    app: alice
+spec:
+  containers:
+  - name: alice
+    image: curlimages/curl
+    command: ["sleep"]
+    args: ["3600"]

@@ -1,0 +1,26 @@
+First, as an admin, you want to create a new user. Here is how you might do this with a curl command.First login:
+
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"adminpassword"}' http://localhost:7000/login
+This should return a JWT in the response,eg:
+{"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTYxMzgwNzc2MywiZXhwIjoxNjEzODA5NTYzfQ.YHYWjy7QcwCeNnuLMLT3sQEgQ5rFoFj8aeXD8zp-80U"}
+
+
+curl -X POST http://localhost:4001/register -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODY2NTM5NTksImV4cCI6MTY4NjY1NTc1OX0.gZcQ0i9eg0LjIlE7B1SxK30I3XogP6x0DWeAFYEEzs4" -d '{"username": "new_user", "password": "new_password", "email": "new_user@example.com", "role": "user"}'
+This command sends a POST request to the /register endpoint of the UI Service with the necessary data to create a new user. The UI Service then forwards this request to the Authentication Service, which actually creates the user.
+
+Next, the new user wants to log in and create a job. The first step is to obtain an authentication token by logging in:
+
+curl -X POST http://localhost:7000/login -H "Content-Type: application/json" -d '{"username": "new_user", "password": "new_password"}'
+This command sends a POST request to the /login endpoint of the UI Service. The UI Service forwards this request to the Authentication Service, which verifies the user's credentials and returns an authentication token. The UI Service then returns this token to the user.
+
+Next, the user needs to use this token to authenticate themselves when they submit a job. Let's say the token they received was abc123. Here's how they could submit a job:
+
+curl -X POST http://localhost:4001/submit_job -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODY2NTM3NTUsImV4cCI6MTY4NjY1NTU1NX0.SmeIjB3jJkjYVD-5V8NSi0_5fD26BnfD6v_1UsBP3EA" -d '{"task_type": "MAP", "user_id":"1","job_description": "Test", "input_path": "/app/test", "output_path": "/app/out.txt"}'
+This command sends a POST request to the /submit_job endpoint of the UI Service, including the authentication token in the x-access-tokens header. The UI Service forwards this request, including the token, to the Monitoring Service, which verifies the token, creates the job, and returns a response.
+
+
+
+
+If you want to delete a user(as an admin always):
+Delete User:
+    curl -X DELETE -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODY2NTM3NTUsImV4cCI6MTY4NjY1NTU1NX0.SmeIjB3jJkjYVD-5V8NSi0_5fD26BnfD6v_1UsBP3EA" http://localhost:4001/delete_user/new_user
