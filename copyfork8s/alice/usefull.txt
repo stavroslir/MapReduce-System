@@ -8,4 +8,4 @@ kubectl exec -it alice -- /bin/sh
 
 Curl command example:
 
-curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"adminpassword"}' http://ui-service:7000/login
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"adminpassword"}' http://ui-service:80/login
