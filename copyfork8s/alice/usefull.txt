@@ -1,6 +1,6 @@
 Deploy Alice:
 
-kubectl apply -f curl-pod.yaml
+kubectl apply -f alice.yaml
 
 
 Exec in the pod(to test):
@@ -8,4 +8,8 @@ kubectl exec -it alice -- /bin/sh
 
 Curl command example:
 
-curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"adminpassword"}' http://ui-service:80/login
+login as admin:
+    curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"adminpassword"}' http://ui-service:80/login
+
+Create a user:
+    curl -X POST http://ui-service:80/register -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODY2NTM5NTksImV4cCI6MTY4NjY1NTc1OX0.gZcQ0i9eg0LjIlE7B1SxK30I3XogP6x0DWeAFYEEzs4" -d '{"username": "new_user", "password": "new_password", "email": "new_user@example.com", "role": "user"}'
