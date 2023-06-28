@@ -2,8 +2,8 @@ from flask import Flask, request, jsonify
 import requests
 
 app = Flask(__name__)
-AUTH_SERVICE_URL = 'http://172.17.0.2:4002'
-MONITOR_SERVICE_URL = 'http://172.17.0.3:4003'
+AUTH_SERVICE_URL = 'http://172.17.0.3:4002'
+MONITOR_SERVICE_URL = 'http://172.17.0.4:4003'
 
 @app.route('/register', methods=['POST'])
 def register():

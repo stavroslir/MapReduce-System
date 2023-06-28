@@ -1,5 +1,5 @@
 # Define the name of the image you want to build
-IMAGE_NAME = worker2
+IMAGE_NAME = worker
 
 # Define the version for the docker image
 VERSION = latest

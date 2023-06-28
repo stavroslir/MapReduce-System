@@ -2,6 +2,9 @@ I have created a testing for the worker.
 It interacts with a fake Master just for testing.
 It works.
 Only tried it with one worker.
+
+Get the ip of the worker container :
+    docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ID
 Commands to follow.
 
 Fake master:
