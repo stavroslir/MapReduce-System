@@ -1,0 +1,49 @@
+register :
+curl -X POST -H "Content-Type: application/json"  -d '{
+    "address": "172.17.0.4:5005"
+}' http://127.0.0.1:4003/register
+
+
+submit_job:
+curl -X POST \
+        -H "Content-Type: application/json" \
+        -d '{
+            "user_id": "1", 
+            "task_type": "MAP", 
+            "function_file": "'"$(base64 -i functions.py)"'", 
+            "job_description": "Test job", 
+            "input_path": "/app/test", 
+            "output_path": "/app/output", 
+            "function_name": "map_function"
+        }' \
+        http://127.0.0.1:4003/job
+
+
+curl -X POST \
+        -H "Content-Type: application/json" \
+        -d '{
+            "user_id": "1", 
+            "task_type": "SHUFFLE", 
+            "function_file": "'"$(base64 -i functions.py)"'", 
+            "job_description": "Test job", 
+            "input_path": "/app/output", 
+            "output_path": "/app/shuffle_output", 
+            "function_name": "shuffle_function"
+        }' \
+        http://127.0.0.1:4003/job
+
+
+
+
+curl -X POST \
+        -H "Content-Type: application/json" \
+        -d '{
+            "user_id": "1", 
+            "task_type": "REDUCE", 
+            "function_file": "'"$(base64 -i functions.py)"'", 
+            "job_description": "Test job", 
+            "input_path": "/app/shuffle_output", 
+            "output_path": "/app/reduce_output", 
+            "function_name": "reduce_function"
+        }' \
+        http://127.0.0.1:4003/job

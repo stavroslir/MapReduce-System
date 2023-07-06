@@ -7,6 +7,4 @@ metadata:
 spec:
   containers:
   - name: alice
-    image: curlimages/curl
-    command: ["sleep"]
-    args: ["3600"]
+    image: localhost:5004/alice:latest

@@ -4,13 +4,14 @@ from concurrent import futures
 import time
 import worker_pb2
 import worker_pb2_grpc
+import json
 
 class Worker(worker_pb2_grpc.WorkerServicer):
     def __init__(self):
-        self.status = worker_pb2.Status.IDLE
+        self.status = worker_pb2.Status.WorkerStatus.IDLE
 
     def AssignTask(self, request, context):
-        self.status = worker_pb2.Status.BUSY
+        self.status = worker_pb2.Status.WorkerStatus.BUSY
         # Execute the function code
         exec(request.function_code)
         # Get the function from the local scope
@@ -19,10 +20,9 @@ class Worker(worker_pb2_grpc.WorkerServicer):
             data = file.read()
         output = function(data)
         with open(request.output_path, 'w') as file:
-            for pair in output:
-                file.write(f"{pair[0]} {pair[1]}\n")
-        self.status = worker_pb2.Status.IDLE
-        return worker_pb2.Message(message="Task completed successfully")
+            file.write(output)
+        self.status = worker_pb2.Status.WorkerStatus.IDLE
+        return worker_pb2.Status(status=worker_pb2.Status.WorkerStatus.ACCEPTED) 
 
     def GetStatus(self, request, context):
         return worker_pb2.Status(status=self.status)
@@ -40,4 +40,3 @@ def serve():
 
 if __name__ == "__main__":
     serve()
-

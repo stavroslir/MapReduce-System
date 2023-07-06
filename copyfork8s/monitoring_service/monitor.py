@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
 from database import db, Job, Worker, init_app
+from werkzeug.utils import secure_filename
 import grpc
 import worker_pb2
 import worker_pb2_grpc
+import base64
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
@@ -10,7 +12,13 @@ stub_dict = {}
 
 @app.route('/job', methods=['POST'])
 def submit_job():
+
+    #first get the input file
     data = request.get_json()
+
+    function_code = base64.b64decode(data['function_file']).decode('utf-8')
+
+
     new_job = Job(status='submitted', user_id=data['user_id'], description=data['job_description'])
     db.session.add(new_job)
     db.session.commit()
@@ -22,6 +30,8 @@ def submit_job():
         task.task_type = worker_pb2.Task.TaskType.Value(data['task_type'])
         task.input_path = data['input_path']
         task.output_path = data['output_path']
+        task.function_name = data['function_name']  
+        task.function_code = function_code  # Set the function code
         response = stub.AssignTask(task)
 
     return jsonify({'message': 'New job created!', 'job_id': new_job.id})
