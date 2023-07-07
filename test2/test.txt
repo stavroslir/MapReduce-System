@@ -1,6 +1,6 @@
 register :
 curl -X POST -H "Content-Type: application/json"  -d '{
-    "address": "172.17.0.3:5005"
+    "address": "172.17.0.4:5005"
 }' http://127.0.0.1:4003/register
 
 
