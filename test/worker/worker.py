@@ -12,16 +12,23 @@ class Worker(worker_pb2_grpc.WorkerServicer):
 
     def AssignTask(self, request, context):
         self.status = worker_pb2.Status.WorkerStatus.BUSY
-        # Execute the function code
-        exec(request.function_code)
-        # Get the function from the local scope
-        function = locals()[request.function_name]
-        with open(request.input_path, 'r') as file:
-            data = file.read()
-        output = function(data)
-        with open(request.output_path, 'w') as file:
-            file.write(output)
-        self.status = worker_pb2.Status.WorkerStatus.IDLE
+        try:
+            print("executing function code.")
+            # Execute the function code
+            exec(request.function_code)
+            # Get the function from the local scope
+            function = locals()[request.function_name]
+            with open(request.input_path, 'r') as file:
+                print("opening input file")
+                data = file.read()
+            output = function(data)
+            with open(request.output_path, 'w') as file:
+                print("opening output file")
+                file.write(output)
+            self.status = worker_pb2.Status.WorkerStatus.IDLE
+        except Exception as e:
+            print(f"Error while processing task: {str(e)}")
+            return worker_pb2.Status(status=worker_pb2.Status.WorkerStatus.ERROR)
         return worker_pb2.Status(status=worker_pb2.Status.WorkerStatus.ACCEPTED) 
 
     def GetStatus(self, request, context):

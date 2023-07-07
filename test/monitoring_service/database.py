@@ -12,6 +12,9 @@ class Job(db.Model):
     output_path = db.Column(db.String(120), nullable=False)
     function_name = db.Column(db.String(120), nullable=False)
     function_code = db.Column(db.Text, nullable=False)
+    dependencies = db.Column(db.PickleType, nullable=True)
+    worker_id = db.Column(db.Integer, nullable=True)
+
 
 class Worker(db.Model):
     id = db.Column(db.Integer, primary_key=True)
