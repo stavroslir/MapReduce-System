@@ -13,28 +13,41 @@ class Worker(worker_pb2_grpc.WorkerServicer):
     def AssignTask(self, request, context):
         self.status = worker_pb2.Status.WorkerStatus.BUSY
         try:
-            print("executing function code.")
             # Execute the function code
             exec(request.function_code)
-            print("executed.")
             # Get the function from the local scope
             function = locals()[request.function_name]
-            with open(request.input_path, 'r') as file:
-                print("opening input file", request.input_path)
-                data = file.read()
-            output = function(data)
-            print("yo")
-            print(request.output_path)
-            with open(request.output_path, 'w') as file:
-                print("opening output file",request.output_path)
-                file.write(output)
-                print("did it")
+            output = []
+            if request.task_type== 1:
+                input_paths = request.input_path.split(',')
+                print(f"Input paths: {input_paths}")  # Debugging print statement
+                output.append(function(input_paths))
+                print(output)
+                with open(request.output_path, 'w') as file:
+                    file.write(str(output))
+            elif request.task_type== 2:
+                input_path = request.input_path
+                print(f"Reading from input path: {input_path}")  # Debugging print statement
+                with open(input_path.strip(), 'r') as file:  # Use strip() to remove leading/trailing whitespace
+                    data = file.read()
+                    print(data)
+                output.append(function(data))
+                with open(request.output_path, 'w') as file:
+                    file.write(str(output))
+            else:
+                input_path = request.input_path
+                print(f"Reading from input path: {input_path}")  # Debugging print statement
+                with open(input_path.strip(), 'r') as file:  # Use strip() to remove leading/trailing whitespace
+                    data = file.read()
+                output.append(function(data))
+                with open(request.output_path, 'w') as file:
+                    file.write('\n'.join(output))
             self.status = worker_pb2.Status.WorkerStatus.IDLE
             return worker_pb2.Status(status=worker_pb2.Status.WorkerStatus.ACCEPTED) 
         except Exception as e:
             print(f"Error while processing task: {str(e)}")
             return worker_pb2.Status(status=worker_pb2.Status.WorkerStatus.ERROR)
-        
+    
     def GetStatus(self, request, context):
         return worker_pb2.Status(status=self.status)
 

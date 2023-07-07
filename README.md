@@ -44,17 +44,11 @@ This is working for now.
 
 # TO-DO:
 
-1. Fix the code of monitoring:
-    -User will give a file to work on and a file with code.
-    -Monitoring should take this and break them to tasks.(MAP, Shuffle, Reduce - Should break the file to chunks as well)
-    -Each task will be put in a queue.
-    -Tasks will be assigned to idle workers.
-    -May need more, don't know.
+1. In test2 i have implemented the whole monitoring.
+Tasks are automatically put to queue and picked up by idle workers. No idea about race conditions. Tested with 2 workers and worked fine. Workers are chosen randomly if IDLE. Needs improvement.
 
-2. Fix NFS for k8s.
-    -These are all working in docker locally. I am trying to build the NFS server necessary for the k8s implementation.
+2. Should copy the code of test2 in copy4k8s for monitoring and workers. Monitoring yaml will need to have a shared volume as well.
+
 
 3. When this is done we will look into fault tolerance- Zookeeper.
 
-Reminder:
-    Have not change the code of monitoring and worker in the copy4k8s.

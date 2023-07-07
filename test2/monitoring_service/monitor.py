@@ -116,27 +116,25 @@ def submit_job():
         map_jobs.append(map_job)
     db.session.commit()
 
-    # Create the Shuffle jobs and set their dependencies to the Map jobs
-    shuffle_jobs = []
-    for i, map_job in enumerate(map_jobs):
-        shuffle_job = Job(status='waiting', user_id=data['user_id'], 
-                          description=data['job_description'], task_type='SHUFFLE', 
-                          input_path=map_job.output_path, output_path=f'/app/shared/shuffle_output_{i}', 
-                          function_name='shuffle_function', function_code=function_code,
-                          dependencies=[map_job.id])
-        db.session.add(shuffle_job)
-        shuffle_jobs.append(shuffle_job)
+    shuffle_job = Job(status='waiting', user_id=data['user_id'], 
+                  description=data['job_description'], task_type='SHUFFLE', 
+                  input_path=[map_job.output_path for map_job in map_jobs], 
+                  output_path='/app/shared/shuffle_output', 
+                  function_name='shuffle_function', function_code=function_code,
+                  dependencies=[map_job.id for map_job in map_jobs])
+    db.session.add(shuffle_job)
     db.session.commit()
 
     # Create the Reduce job and set its dependency to the Shuffle jobs
     reduce_job = Job(status='waiting', user_id=data['user_id'], 
-                     description=data['job_description'], task_type='REDUCE', 
-                     input_path=[shuffle_job.output_path for shuffle_job in shuffle_jobs], 
-                     output_path='/app/shared/reduce_output', 
-                     function_name='reduce_function', function_code=function_code,
-                     dependencies=[shuffle_job.id for shuffle_job in shuffle_jobs])
+                    description=data['job_description'], task_type='REDUCE', 
+                    input_path=shuffle_job.output_path, 
+                    output_path='/app/shared/reduce_output', 
+                    function_name='reduce_function', function_code=function_code,
+                    dependencies=[shuffle_job.id])
     db.session.add(reduce_job)
     db.session.commit()
+
 
     return jsonify({'message': 'New job created!', 'job_id': map_jobs[0].id})
 
