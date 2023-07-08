@@ -3,7 +3,7 @@ syntax = "proto3";
 package worker;
 
 service Worker {
-    rpc AssignTask(Task) returns (Message) {}
+    rpc AssignTask(Task) returns (Status) {}   
     rpc GetStatus(Empty) returns (Status) {}
 }
 
@@ -16,6 +16,9 @@ message Task {
     TaskType task_type = 1;
     string input_path = 2;
     string output_path = 3;
+    string function_name = 4;
+    string function_code = 5; 
+    int32 job_id = 6; 
 }
 
 message Message {
@@ -26,6 +29,8 @@ message Status {
     enum WorkerStatus {
         IDLE = 0;
         BUSY = 1;
+        ACCEPTED = 2;   
+        DECLINED = 3;   
     }
     WorkerStatus status = 1;
 }

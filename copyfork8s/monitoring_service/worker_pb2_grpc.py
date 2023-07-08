@@ -17,7 +17,7 @@ class WorkerStub(object):
         self.AssignTask = channel.unary_unary(
                 '/worker.Worker/AssignTask',
                 request_serializer=worker__pb2.Task.SerializeToString,
-                response_deserializer=worker__pb2.Message.FromString,
+                response_deserializer=worker__pb2.Status.FromString,
                 )
         self.GetStatus = channel.unary_unary(
                 '/worker.Worker/GetStatus',
@@ -47,7 +47,7 @@ def add_WorkerServicer_to_server(servicer, server):
             'AssignTask': grpc.unary_unary_rpc_method_handler(
                     servicer.AssignTask,
                     request_deserializer=worker__pb2.Task.FromString,
-                    response_serializer=worker__pb2.Message.SerializeToString,
+                    response_serializer=worker__pb2.Status.SerializeToString,
             ),
             'GetStatus': grpc.unary_unary_rpc_method_handler(
                     servicer.GetStatus,
@@ -77,7 +77,7 @@ class Worker(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/worker.Worker/AssignTask',
             worker__pb2.Task.SerializeToString,
-            worker__pb2.Message.FromString,
+            worker__pb2.Status.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

@@ -17,7 +17,7 @@ build:
 
 # This target runs the Docker image, in case you want to execute it as well
 run:
-	docker run -v /Users/stavroslironis/Desktop/MapReduce-System/worker:/app -p $(HOST_PORT):$(CONTAINER_PORT) $(IMAGE_NAME):$(VERSION)
+	docker run -v /Users/stavroslironis/Desktop/MapReduce-System/shared:/app/shared -p $(HOST_PORT):$(CONTAINER_PORT) $(IMAGE_NAME):$(VERSION)
 
 # This target pushes the Docker image to DockerHub
 push:

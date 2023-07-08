@@ -19,3 +19,11 @@ spec:
         image: localhost:5004/monitoring-k8s:latest
         ports:
         - containerPort: 4003
+        volumeMounts:
+        - name: hostpath-storage
+          mountPath: /app/storage
+      volumes:
+      - name: hostpath-storage
+        hostPath:
+          path: /Users/stavroslironis/Desktop/storage
+          type: Directory
