@@ -34,8 +34,9 @@ def delete_user(username):
 
     if validation_data.get('valid'):
         response = requests.delete(f'{AUTH_SERVICE_URL}/user/{username}', headers=headers)
-
-    return jsonify(response.json()), response.status_code
+        return jsonify(response.json()), response.status_code
+    
+    return jsonify({'message': 'Token is invalid.'}), 401
 
 @app.route('/login', methods=['POST'])
 def login():

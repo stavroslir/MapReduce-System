@@ -3,10 +3,11 @@ from database import db, Job, Worker, init_app
 import grpc
 import worker_pb2
 import worker_pb2_grpc
-import base64
 import threading
 import time
-import os
+from kubernetes import client
+from kubernetes.config import load_incluster_config
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
@@ -93,9 +94,8 @@ def split_data_into_chunks(data, num_chunks):
 @app.route('/job', methods=['POST'])
 def submit_job():
     data = request.get_json()
-    function_code = base64.b64decode(data['function_file']).decode('utf-8')
-    print(data)
-    # Split the input file into chunks
+    with open(data['function_file'], 'r') as file:
+        function_code = file.read()   
     with open(data['input_path'], 'r') as file:
         f = file.read()
     chunks = split_data_into_chunks(f, num_chunks=10)
@@ -140,27 +140,107 @@ def submit_job():
 
 @app.route('/register', methods=['POST'])
 def register_worker():
-    data = request.get_json()
-    new_worker = Worker(address=data['address'], status='IDLE')
+    new_worker = Worker(status='IDLE')
     db.session.add(new_worker)
     db.session.commit()
-    stub = worker_pb2_grpc.WorkerStub(grpc.insecure_channel(new_worker.address))
+
+    # Create a new worker pod
+    load_incluster_config()
+    v1 = client.CoreV1Api()
+    pod = client.V1Pod(
+        metadata=client.V1ObjectMeta(
+        name=f"worker-{new_worker.id}",
+        labels={"app": f"worker-{new_worker.id}"}),
+        spec=client.V1PodSpec(
+            containers=[
+                client.V1Container(
+                    name="worker",
+                    image="localhost:5004/worker-k8s:latest",
+                    ports=[client.V1ContainerPort(container_port=5005)],
+                    env=[
+                        client.V1EnvVar(
+                            name="WORKER_ID",
+                            value=str(new_worker.id)
+                        ),
+                        client.V1EnvVar(
+                            name="MONITOR_ADDRESS",
+                            value="monitor-service.default.svc.cluster.local:80"
+                        )
+                    ],
+                    volume_mounts=[
+                        client.V1VolumeMount(
+                            name="hostpath-storage",
+                            mount_path="/app/shared"
+                        )
+                    ]
+                )
+            ],
+            volumes=[
+                client.V1Volume(
+                    name="hostpath-storage",
+                    host_path=client.V1HostPathVolumeSource(
+                        path="/Users/stavroslironis/Desktop/storage",
+                        type="Directory"
+                    )
+                )
+            ]
+        )
+    )
+    v1.create_namespaced_pod(namespace="default", body=pod)
+    service = client.V1Service(
+        metadata=client.V1ObjectMeta(name=f"worker-{new_worker.id}"),
+        spec=client.V1ServiceSpec(
+            selector={"app": f"worker-{new_worker.id}"},
+            ports=[client.V1ServicePort(port=5005, target_port=5005)]
+        )
+    )
+    v1.create_namespaced_service(namespace="default", body=service)
+
+    # Wait for the worker pod to start
+    time.sleep(10)  # Adjust this delay as needed
+
+    # Create the gRPC stub and open the connection
+    stub = worker_pb2_grpc.WorkerStub(grpc.insecure_channel(f"worker-{new_worker.id}.default.svc.cluster.local:5005"))
     stub_dict[new_worker.id] = stub
+
+    # Check if the worker is running and reachable
+    try:
+        response = stub.GetStatus(worker_pb2.Empty())
+        print(f"Worker {new_worker.id} status: {response.status}")
+    except grpc.RpcError as e:
+        print(f"GetStatus RPC failed for worker {new_worker.id}. Error: {str(e)}")
+
     return jsonify({'message':'New worker registered!', 'worker_id': new_worker.id})
+
 
 @app.route('/deregister', methods=['POST'])
 def deregister_worker():
     data = request.get_json()
-    worker = Worker.query.get(data['worker_id'])
+    worker_id = int(data['worker_id'])
+    worker = Worker.query.get(worker_id)
+
+    if worker is None:
+        return jsonify({'message': f'No worker found with ID {worker_id}'}), 404
+
+    # Delete the worker's pod and service from Kubernetes
+    load_incluster_config()
+    v1 = client.CoreV1Api()
+    v1.delete_namespaced_pod(name=f"worker-{worker_id}", namespace="default")
+    v1.delete_namespaced_service(name=f"worker-{worker_id}", namespace="default")
+
+    # Remove the worker from the database
     db.session.delete(worker)
     db.session.commit()
-    del stub_dict[worker.id]
+
+    # Remove the worker's stub from stub_dict
+    del stub_dict[worker_id]
+
     return jsonify({'message': 'Worker deregistered!'})
 
 @app.route('/workers', methods=['GET'])
 def view_workers():
     workers = Worker.query.all()
-    return jsonify([{'worker_id': worker.id, 'address': worker.address, 'status': worker.status} for worker in workers])
+    return jsonify([{'worker_id': worker.id, 'status': worker.status} for worker in workers])
 
 @app.route('/jobs', methods=['GET'])
 def view_jobs():

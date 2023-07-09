@@ -49,3 +49,10 @@ curl -X POST \
             "function_name": "map_function"
         }' \
         http://ui-service:80/submit_job
+
+
+
+curl -X POST http://monitor-service/register
+
+
+curl -X POST -H "Content-Type: application/json" -d '{ "user_id": "1", "function_file": "/app/shared/functions.py", "job_description": "Test job", "input_path": "/app/shared/test"}' http://monitor-service/job

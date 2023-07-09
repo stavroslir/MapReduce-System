@@ -1,54 +1,52 @@
-# Containers
-
-# Test with containers only
-Start with setting the containers up (use the makefiles)
-
-First, as an admin, you want to create a new user. Here is how you might do this with a curl command.
-# First login:
-    curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"adminpassword"}' http://localhost:4001/login
-
-This should return a JWT in the response,eg:
-{"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTYxMzgwNzc2MywiZXhwIjoxNjEzODA5NTYzfQ.YHYWjy7QcwCeNnuLMLT3sQEgQ5rFoFj8aeXD8zp-80U"}
-
-
-# Then create a user:
-    curl -X POST http://localhost:4001/register -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODc5NjEyNDksImV4cCI6MTY4Nzk2MzA0OX0.r-q802M6dYiZoOO3JGBIRNUcVWvyBIRvW00vjDwN5x0" -d '{"username": "new_user", "password": "new_password", "email": "new_user@example.com", "role": "user"}'
-This command sends a POST request to the /register endpoint of the UI Service with the necessary data to create a new user. The UI Service then forwards this request to the Authentication Service, which actually creates the user.
-
-
-# Register a worker: 
-(if you want to find the IP of the worker container run:     docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ID)
-
-    curl -X POST -H "Content-Type: application/json" -d '{
-    "address": "172.17.0.5:5005"
-}' http://localhost:4003/register                                                                    
-
-Submit a job:
-    curl -X POST \
-        -H "Content-Type: application/json" \
-        -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODc5NjEyNDksImV4cCI6MTY4Nzk2MzA0OX0.r-q802M6dYiZoOO3JGBIRNUcVWvyBIRvW00vjDwN5x0" \
-        -d '{
-            "user_id": "1", 
-            "task_type": "MAP", 
-            "function_file": "'"$(base64 -i /Users/stavroslironis/Desktop/MapReduce-System/functions.py)"'", 
-            "job_description": "Test job", 
-            "input_path": "/app/test", 
-            "output_path": "/app/output", 
-            "function_name": "map_function"
-        }' \
-        http://localhost:4001/submit_job
-
-
-This is working for now.
-
-
 # TO-DO:
-
-1. In test2 i have implemented the whole monitoring.
-Tasks are automatically put to queue and picked up by idle workers. No idea about race conditions. Tested with 2 workers and worked fine. Workers are chosen randomly if IDLE. Needs improvement.
-
-2. Should copy the code of test2 in copy4k8s for monitoring and workers. Monitoring yaml will need to have a shared volume as well.
+Zookeeper.
 
 
-3. When this is done we will look into fault tolerance- Zookeeper.
+# MapReduce System
 
+This is a MapReduce System implemented for our class PLH 607.
+We implemented it from Scratch.
+Each service is build in a docker container.
+Then we deploy them as pods in a k8s cluster.
+
+# Important notes!
+We used Docker-Desktop for our k8s cluster environment.
+Docker Desktop creates a simple one node cluster.
+That's why we didn't need NFS or any similar Distributed file system.
+In a production environment, this won't be true and slight modifications will be necessary (e.x. volume mounts in our yaml files).
+In our implementation we have created a shared volume for our monitor and workers where we manually put our test file (the file were the system will be applied) and the functions.py file .
+You should find it and change it to your own directory:
+In other words you should the path in the yaml of monitoring:
+
+    volumes:
+        - name: hostpath-storage
+            hostPath:
+            path: /Users/stavroslironis/Desktop/storage         # this should be changed to your own
+            type: Directory
+
+and in the actual code of the monitoring/register endpoint, where we create the workers, line 182:
+    name="hostpath-storage",
+                    host_path=client.V1HostPathVolumeSource(
+                        path="/Users/stavroslironis/Desktop/storage",           # this should be changed
+                        type="Directory"
+                    )
+                )
+
+
+# Quick Tutorial
+
+Inside the Demo file, you will find a step by step guide to actually test our implementation.
+Before being able to test it you should build it though.
+That's why for each service, you should go in their folder and :
+    make build
+    make push
+Make sure to push them correctly in you local docker repository. May need modifications regarding the port (default 5000 was binded for us).
+
+Once you have your containers, you will have to deploy your pods in you k8s cluster.
+You will have to go again in each folder (except worker) and execute:
+    kubectl apply -f <service>.yaml
+This will deploy both the pod and the service needed. (In the case of monitoring service much much more!)
+
+
+Now your cluster should be set!
+You can now follow the Demo file and test it yourself.

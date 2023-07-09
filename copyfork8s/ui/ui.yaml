@@ -19,5 +19,17 @@ spec:
         image: localhost:5004/ui-k8s:latest
         ports:
         - containerPort: 4001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui-service
+spec:
+  selector:
+    app: ui-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 4001
 
 
