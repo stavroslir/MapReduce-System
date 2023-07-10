@@ -16,9 +16,10 @@ Then we deploy them as pods in a k8s cluster.
 
 Our Authentication Service consists of:
 
-    A database where we stored our users, along with their credentials. This database is initialized with a single admin entry.
+* A database where we stored our users, along with their credentials. 
+    This database is initialized with a single admin entry.
 
-    A Flask API that interacts with the User Interface having numerous endpoints where it creates and deletes users.
+* A Flask API that interacts with the User Interface having numerous endpoints where it creates and deletes users.
 
 When a user logs in a JWT is issued. This token is valid for 30 minutes and comes with certain accesses for each user(admin and user). The user will have to include this token in every following request he/she does.
 
