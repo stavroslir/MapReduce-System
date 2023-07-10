@@ -12,7 +12,6 @@ class Worker(worker_pb2_grpc.WorkerServicer):
 
     def AssignTask(self, request, context):
         self.status = worker_pb2.Status.WorkerStatus.BUSY
-        print("mpikee")
         try:
             # Execute the function code
             exec(request.function_code)
@@ -31,7 +30,6 @@ class Worker(worker_pb2_grpc.WorkerServicer):
                 print(f"Reading from input path: {input_path}")  # Debugging print statement
                 with open(input_path.strip(), 'r') as file:  # Use strip() to remove leading/trailing whitespace
                     data = file.read()
-                    print(data)
                 output.append(function(data))
                 with open(request.output_path, 'w') as file:
                     file.write(str(output))
