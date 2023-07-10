@@ -33,11 +33,11 @@ Our UI is CLI implemented. The way it works is as an intermediary to our service
 
 Our Monitoring Service is the backbone of our distributed system, ensuring that tasks are appropriately dispatched and executed across our worker nodes. It consists of:
 
-    Database: A database where info about the Jobs and the Workers of our system is stored.
+* Database: A database where info about the Jobs and the Workers of our system is stored.
 
-    Job Dispatcher: The Job Dispatcher is responsible for assigning tasks to available workers. It continually checks the job queue for new tasks and assigns them to idle workers. It also monitors the status of running tasks and updates their status upon completion. A job is created when the /submit_job endpoint is reached.
+* Job Dispatcher: The Job Dispatcher is responsible for assigning tasks to available workers. It continually checks the job queue for new tasks and assigns them to idle workers. It also monitors the status of running tasks and updates their status upon completion. A job is created when the /submit_job endpoint is reached.
 
-    Integration with Kubernetes: The Monitoring Service is designed to work seamlessly with Kubernetes. It uses the Kubernetes API to create and manage worker pods, ensuring that the system can scale up and down as needed. A worker will be created if an admin reaches the /register_worker endpoint of the ui. With each worker a gRPC is initiated and the moment of creation. Same goes for the /deregister_worker endpoint. If we want to scale down our system, we can delete a worker by providing its id.
+* Integration with Kubernetes: The Monitoring Service is designed to work seamlessly with Kubernetes. It uses the Kubernetes API to create and manage worker pods, ensuring that the system can scale up and down as needed. A worker will be created if an admin reaches the /register_worker endpoint of the ui. With each worker a gRPC is initiated and the moment of creation. Same goes for the /deregister_worker endpoint. If we want to scale down our system, we can delete a worker by providing its id.
 
 The Monitoring Service exposes a FLASK API that allows users to submit jobs, view the status of jobs, and manage workers.
 In essence, the Monitoring Service is the orchestrator of our distributed system, managing the workers and ensuring that all tasks are executed in a timely and reliable manner.
@@ -47,8 +47,8 @@ In essence, the Monitoring Service is the orchestrator of our distributed system
 Our workers are actually pretty simple in implementation. They are created by our monitoring service and work as a gRPC server. They stay put until the get a message.
 They can either return their status or execute code that is provided.
     
-    Security note!
-    We use the "exec" command for code execution which is highly not recommended. However, no matter what we would use, when you execute arbitrary code, there will always be a high security risk. We have chosen to use the "exec" command because our focus is not on the security scope.
+- Security note!!!
+    * We use the "exec" command for code execution which is highly not recommended. However, no matter what we would use, when you execute arbitrary code, there will always be a high security risk. We have chosen to use the "exec" command because our focus is not on the security scope.
 
 
 # Important notes!
