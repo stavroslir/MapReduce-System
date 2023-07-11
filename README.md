@@ -23,7 +23,7 @@ The /validate_token endpoint is called in every request to actually check the to
 
 ## User Interface Service
 
-Our UI is implemented as a CLI. The way it works is as an intermediary to our services. Users submit their requests through the UI and the service forward them to the appropriate service. It would be more efficient to create a gRPC with the Authentication service, as every call uses the /validate_token endpoint to validate the Token. We will work on this.
+Our UI works as an intermediary to our services. Users submit their requests through the UI and the service forward them to the appropriate service. It would be more efficient to create a gRPC with the Authentication service, as every call uses the /validate_token endpoint to validate the Token. We will work on this.
 
 ## Monitoring Service
 
