@@ -18,14 +18,12 @@ This command sends a POST request to the /register endpoint of the UI Service wi
     curl -X DELETE -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg4OTM0OTUsImV4cCI6MTY4ODg5NTI5NX0.WswoFZPlvLPUbOpmFnA_duxE_SbUmASwntApjZYd7gM" http://ui-service/delete_user/new_user
 
 # Register a worker: (admin only)
-Note:
-First register the workers and then submit the job(s) or it might not work correctly.
 
-    curl -X POST -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwNzA2MTMsImV4cCI6MTY4OTA3MjQxM30.1gcyEhXCWIEpqJNJo9_wWnaE7ZT3cZn4ofvs50_nzUU" -d '{}' http://ui-service/register_worker
+    curl -X POST -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwODE5NDksImV4cCI6MTY4OTA4Mzc0OX0.WfAZzW1VUPfmCFpZ4X6RIxG6SNdvCPVRvEqON-NA0Lo" -d '{}' http://ui-service/register_worker
 
 # De-register a worker: (admin only)   
 
-    curl -X POST -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwNzA2MTMsImV4cCI6MTY4OTA3MjQxM30.1gcyEhXCWIEpqJNJo9_wWnaE7ZT3cZn4ofvs50_nzUU" -d '{"worker_id": "1"}' http://ui-service/deregister_worker
+    curl -X POST -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwODE5NDksImV4cCI6MTY4OTA4Mzc0OX0.WfAZzW1VUPfmCFpZ4X6RIxG6SNdvCPVRvEqON-NA0Lo" -d '{"worker_id": "1"}' http://ui-service/deregister_worker
 
 # Login as a user:
 
@@ -39,7 +37,7 @@ This is the token you will use for every request you do as this user.
 
     curl -X POST \
     -H "Content-Type: application/json" \
-    -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwNzA2MTMsImV4cCI6MTY4OTA3MjQxM30.1gcyEhXCWIEpqJNJo9_wWnaE7ZT3cZn4ofvs50_nzUU" \
+    -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwODE5NDksImV4cCI6MTY4OTA4Mzc0OX0.WfAZzW1VUPfmCFpZ4X6RIxG6SNdvCPVRvEqON-NA0Lo" \
     -d '{
         "user_id": "1",
         "function_file": "/app/shared/functions.py",
@@ -52,12 +50,12 @@ This is the token you will use for every request you do as this user.
 
     curl -X GET \
     -H "Content-Type: application/json" \
-    -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg4OTQ2MjMsImV4cCI6MTY4ODg5NjQyM30.uIrSoJTjoI0bjiXTzwTCffxkI872yWFFBq7GYh0STP4" \
+    -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwODE5NDksImV4cCI6MTY4OTA4Mzc0OX0.WfAZzW1VUPfmCFpZ4X6RIxG6SNdvCPVRvEqON-NA0Lo" \
     http://ui-service/view_jobs
 
 # View Workers: (admin only)
 
     curl -X GET \
     -H "Content-Type: application/json" \
-    -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg4OTQ2MjMsImV4cCI6MTY4ODg5NjQyM30.uIrSoJTjoI0bjiXTzwTCffxkI872yWFFBq7GYh0STP4" \
+    -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwODE5NDksImV4cCI6MTY4OTA4Mzc0OX0.WfAZzW1VUPfmCFpZ4X6RIxG6SNdvCPVRvEqON-NA0Lo" \
     http://ui-service/view_workers

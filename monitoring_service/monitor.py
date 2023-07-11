@@ -19,6 +19,7 @@ class Dispatcher:                                       # Dispatcher class handl
 
         self.thread = threading.Thread(target=self.run)
         self.app = app
+        self.lock = threading.Lock()
 
     def start(self):
 
@@ -43,27 +44,34 @@ class Dispatcher:                                       # Dispatcher class handl
                     if not dependencies_completed:
                             continue                    # Skip this job if its dependencies have not completed
                     
-                for worker in Worker.query.filter_by(status='IDLE').all():              # Loop through all idle workers       
-                    stub = stub_dict[worker.id]
-                    task = worker_pb2.Task()
-                    task.job_id = job.id
-                    task.task_type = job.task_type
-                    if isinstance(job.input_path, list):
-                        task.input_path = ','.join(job.input_path)      # Join all paths into a single string if the input is list
-                    else:
-                        task.input_path = job.input_path
-                    task.output_path = job.output_path
-                    task.function_name = job.function_name  
-                    task.function_code = job.function_code
-                    response = stub.AssignTask(task)                # assign job to idle worker found
-                    print(f"Dispatched job {job.id} to worker {worker.id}, response: {response.status}")
+                for worker in Worker.query.filter_by(status='IDLE').all():              # Loop through all idle workers   
+                    try:
+                        with self.lock:                             
+                            if worker.id not in stub_dict:
+                                print(f"Stub for worker {worker.id} not found in stub_dict")
+                                continue
+                            stub = stub_dict[worker.id]
+                            task = worker_pb2.Task()
+                            task.job_id = job.id
+                            task.task_type = job.task_type
+                            if isinstance(job.input_path, list):
+                                task.input_path = ','.join(job.input_path)      # Join all paths into a single string if the input is list
+                            else:
+                                task.input_path = job.input_path
+                            task.output_path = job.output_path
+                            task.function_name = job.function_name  
+                            task.function_code = job.function_code
+                            response = stub.AssignTask(task)                # assign job to idle worker found
+                            print(f"Dispatched job {job.id} to worker {worker.id}, response: {response.status}")
 
-                    if response.status == worker_pb2.Status.WorkerStatus.ACCEPTED:
-                        job.status = 'running'              # if the job is accepted, change the status of the job and the worker and commit them to the database
-                        job.worker_id = worker.id 
-                        worker.status = 'BUSY'
-                        db.session.commit()
-                    break
+                            if response.status == worker_pb2.Status.WorkerStatus.ACCEPTED:
+                                job.status = 'running'              # if the job is accepted, change the status of the job and the worker and commit them to the database
+                                job.worker_id = worker.id 
+                                worker.status = 'BUSY'
+                                db.session.commit()
+                            break
+                    except grpc.RpcError as e:
+                        print(f"Failed to dispatch job {job.id} to worker {worker.id}. Error: {str(e)}")
 
     def check_worker_status(self):                      # function to check the status of a worker
 
@@ -230,7 +238,8 @@ def deregister_worker():
 
     db.session.delete(worker)               # Remove the worker from the database
     db.session.commit()
-    del stub_dict[worker_id]        # Remove the worker's stub from stub_dict
+    with dispatcher_thread.lock:  # Acquire the lock before modifying stub_dict
+        del stub_dict[worker_id] # Remove the worker's stub from stub_dict
 
     return jsonify({'message': 'Worker deregistered!'})
 
