@@ -1,14 +1,20 @@
+Before you begin make sure to include the files (test file and functions file in your shared directory)!
+
 # First, login as admin:
     curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"adminpassword"}' http://ui-service/login
+
 This will return an answer like this:
     {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwNjk0ODQsImV4cCI6MTY4OTA3MTI4NH0.GE_ZItxPb5f71Leq32UavrT5sxcFgMsz0jDhbsECZds"}
 This is the token the admin will use for for every request he/she does.(Bear in mind that every token lasts for 30 minutes)
 
 # Create a user: (admin only)
+
         curl -X POST http://ui-service/register -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwNjc3MTYsImV4cCI6MTY4OTA2OTUxNn0.RP5bgg_w7x4w6lUyK3z_ITbH264WvbyDVnByyq81T0U" -d '{"username": "new_user", "password": "new_password", "email": "new_user@example.com", "role": "user"}'
+
 This command sends a POST request to the /register endpoint of the UI Service with the necessary data to create a new user. The UI Service then forwards this request to the Authentication Service, which actually creates the user.
 
 # Delete user: (admin only)
+
     curl -X DELETE -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg4OTM0OTUsImV4cCI6MTY4ODg5NTI5NX0.WswoFZPlvLPUbOpmFnA_duxE_SbUmASwntApjZYd7gM" http://ui-service/delete_user/new_user
 
 # Register a worker: (admin only)
@@ -17,16 +23,20 @@ First register the workers and then submit the job(s) or it might not work corre
 
     curl -X POST -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwNzA2MTMsImV4cCI6MTY4OTA3MjQxM30.1gcyEhXCWIEpqJNJo9_wWnaE7ZT3cZn4ofvs50_nzUU" -d '{}' http://ui-service/register_worker
 
-# De-register a worker: (admin only)                                                              
+# De-register a worker: (admin only)   
+
     curl -X POST -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwNzA2MTMsImV4cCI6MTY4OTA3MjQxM30.1gcyEhXCWIEpqJNJo9_wWnaE7ZT3cZn4ofvs50_nzUU" -d '{"worker_id": "1"}' http://ui-service/deregister_worker
 
 # Login as a user:
+
     curl -X POST -H "Content-Type: application/json" -d '{"username":"new_user", "password":"new_password"}' http://ui-service/login
+
 Similarly, you will get a response like this:
     {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg4OTIxNDQsImV4cCI6MTY4ODg5Mzk0NH0._vrTz_D-AXmjdE6MQk3JDQD0FfhLEwxiTmSbOwGRwzQ"}
-This is the token you will use for evere request you do as this user.
+This is the token you will use for every request you do as this user.
     
 # Create a job:
+
     curl -X POST \
     -H "Content-Type: application/json" \
     -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODkwNzA2MTMsImV4cCI6MTY4OTA3MjQxM30.1gcyEhXCWIEpqJNJo9_wWnaE7ZT3cZn4ofvs50_nzUU" \
@@ -46,6 +56,7 @@ This is the token you will use for evere request you do as this user.
     http://ui-service/view_jobs
 
 # View Workers: (admin only)
+
     curl -X GET \
     -H "Content-Type: application/json" \
     -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg4OTQ2MjMsImV4cCI6MTY4ODg5NjQyM30.uIrSoJTjoI0bjiXTzwTCffxkI872yWFFBq7GYh0STP4" \
