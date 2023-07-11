@@ -102,7 +102,7 @@ From here on you can now follow the Demo file and test it yourself.
 
 # Kubernetes Deployment
 
-For our Kubernetes deployment we used Docker-Desktop. It's a very easy to use tool that provides the ability to deploy a one node cluster locally.
+For our Kubernetes deployment we used Docker-Desktop. It's a very easy to use tool that provides the ability to deploy a single-node cluster locally.
 A guide on how to install Docker-Desktop on your machine can be found here: https://www.docker.com/products/docker-desktop/
 
 
