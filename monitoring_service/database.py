@@ -14,6 +14,7 @@ class Job(db.Model):
     function_code = db.Column(db.Text, nullable=False)
     dependencies = db.Column(db.PickleType, nullable=True)
     worker_id = db.Column(db.Integer, nullable=True)
+    whole_job_id = db.Column(db.String(120), nullable=False)  
 
 
 class Worker(db.Model):

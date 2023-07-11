@@ -107,4 +107,5 @@ A guide on how to install Docker-Desktop on your machine can be found here: http
 # Contributions
 
 - **[Vasilis Anagnostou, Stavros Lyronis]**:  Authentication service, UI service, Monitoring Service, Workers, Deployment on Kubernetes
+
 - **[Panagiotis Mihas]**: Fault tolerance - Zookeeper

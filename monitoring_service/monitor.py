@@ -7,6 +7,8 @@ import threading
 import time
 from kubernetes import client
 from kubernetes.config import load_incluster_config
+import uuid
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
@@ -102,17 +104,18 @@ def submit_job():
     with open(data['input_path'], 'r') as file:
         f = file.read()
     chunks = split_data_into_chunks(f, num_chunks=10)
+    whole_job_id = str(uuid.uuid4())        # unique id for each job as a whole
 
     map_jobs = []                               # create jobs (Map, Shuffle, Reduce)
     for i, chunk in enumerate(chunks):
-        chunk_input_path = f'/app/shared/map_input_{i}'             # create files for each chunk
+        chunk_input_path = f'/app/shared/{whole_job_id}_map_input_{i}'             # create files for each chunk
         with open(chunk_input_path, 'w') as file:
             file.write(chunk)
 
         map_job = Job(status='submitted', user_id=data['user_id'],                  #create maps jobs for each chunk and commit them to the database
                       description=data['job_description'], task_type='MAP', 
-                      input_path=f'/app/shared/map_input_{i}', output_path=f'/app/shared/map_output_{i}', 
-                      function_name="map_function", function_code=function_code)
+                      input_path=f'/app/shared/{whole_job_id}_map_input_{i}', output_path=f'/app/shared/{whole_job_id}_map_output_{i}', 
+                      function_name="map_function", function_code=function_code, whole_job_id=whole_job_id)
         db.session.add(map_job)
         map_jobs.append(map_job)
     db.session.commit()
@@ -120,8 +123,9 @@ def submit_job():
     shuffle_job = Job(status='waiting', user_id=data['user_id'],                 #create shuffle job that has dependencies on the map tasks and commit it to the database
                   description=data['job_description'], task_type='SHUFFLE', 
                   input_path=[map_job.output_path for map_job in map_jobs], 
-                  output_path='/app/shared/shuffle_output', 
-                  function_name='shuffle_function', function_code=function_code,
+                  output_path=f'/app/shared/{whole_job_id}_shuffle_output', 
+                  function_name='shuffle_function', function_code=function_code, 
+                  whole_job_id=whole_job_id,
                   dependencies=[map_job.id for map_job in map_jobs])
     db.session.add(shuffle_job)
     db.session.commit()
@@ -129,8 +133,9 @@ def submit_job():
     reduce_job = Job(status='waiting', user_id=data['user_id'],                 #create reduce job that has dependencies on the shuffle task and commit it to the database
                     description=data['job_description'], task_type='REDUCE', 
                     input_path=shuffle_job.output_path, 
-                    output_path='/app/shared/reduce_output', 
-                    function_name='reduce_function', function_code=function_code,
+                    output_path=f'/app/shared/{whole_job_id}_reduce_output', 
+                    function_name='reduce_function', function_code=function_code, 
+                    whole_job_id=whole_job_id,
                     dependencies=[shuffle_job.id])
     db.session.add(reduce_job)
     db.session.commit()

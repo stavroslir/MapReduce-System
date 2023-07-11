@@ -4,7 +4,6 @@ from concurrent import futures
 import time
 import worker_pb2
 import worker_pb2_grpc
-import json
 
 class Worker(worker_pb2_grpc.WorkerServicer):   # Worker class 
 
