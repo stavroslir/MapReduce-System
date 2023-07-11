@@ -1,5 +1,5 @@
 # Define the name of the image you want to build
-IMAGE_NAME = ui
+IMAGE_NAME = ui-k8s
 
 # Define the version for the docker image
 VERSION = latest
@@ -21,7 +21,8 @@ run:
 
 # This target pushes the Docker image to DockerHub
 push:
-	docker push $(IMAGE_NAME):$(VERSION)
+	docker tag $(IMAGE_NAME):$(VERSION) localhost:5004/$(IMAGE_NAME):$(VERSION)
+	docker push localhost:5004/$(IMAGE_NAME):$(VERSION)
 
 # This target removes the Docker image from your local Docker repository
 clean:

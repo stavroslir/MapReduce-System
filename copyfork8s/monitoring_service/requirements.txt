@@ -1,5 +1,0 @@
-flask
-flask_sqlalchemy
-grpcio
-grpcio-tools
-kubernetes

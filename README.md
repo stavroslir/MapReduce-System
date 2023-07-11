@@ -1,7 +1,3 @@
-# TO-DO:
-Zookeeper.
-
-
 # MapReduce System
 
 This is a MapReduce System implemented for our class PLH 607.
@@ -37,7 +33,7 @@ Our Monitoring Service is the backbone of our distributed system, ensuring that 
 
 * Job Dispatcher: The Job Dispatcher is responsible for assigning tasks to available workers. It continually checks the job queue for new tasks and assigns them to idle workers. It also monitors the status of running tasks and updates their status upon completion. A job is created when the /submit_job endpoint is reached.
 
-* Integration with Kubernetes: The Monitoring Service is designed to work seamlessly with Kubernetes. It uses the Kubernetes API to create and manage worker pods, ensuring that the system can scale up and down as needed. A worker will be created if an admin reaches the /register_worker endpoint of the ui. With each worker a gRPC is initiated and the moment of creation. Same goes for the /deregister_worker endpoint. If we want to scale down our system, we can delete a worker by providing its id.
+* Integration with Kubernetes: The Monitoring Service is designed to work seamlessly with Kubernetes. It uses the Kubernetes API to create and manage worker pods, ensuring that the system can scale up and down as needed. A worker will be created if an admin reaches the /register_worker endpoint of the ui. With each worker a gRPC is initiated at the moment of creation. Same goes for the /deregister_worker endpoint. If we want to scale down our system, we can delete a worker by providing its id.
 
 The Monitoring Service exposes a FLASK API that allows users to submit jobs, view the status of jobs, and manage workers.
 In essence, the Monitoring Service is the orchestrator of our distributed system, managing the workers and ensuring that all tasks are executed in a timely and reliable manner.
@@ -85,15 +81,14 @@ That's why for each service, you should go in their folder and :
     make build
     make push
 
-Make sure to push them correctly in you local docker repository. May need modifications regarding the port (default 5000 was binded for us).
+Make sure to push them correctly in you local docker repository. May need modifications regarding the port (default 5000 was binded for us). If you have a different port, change it in each Makefile and in each yaml, where the image is mentioned.
 
 Once you have your containers, you will have to deploy your pods in you k8s cluster.
 You will have to go again in each folder (except worker) and execute:
 
     kubectl apply -f <service>.yaml
-    
-This will deploy both the pod and the service needed. (In the case of monitoring service much much more!)
 
+This will deploy both the pod and the service needed. (In the case of monitoring service much much more!)
 
 Now your cluster should be set!
 The way we test it is by creating an Alice pod, representing a client and then exec in it.
@@ -101,3 +96,15 @@ The way we test it is by creating an Alice pod, representing a client and then e
     kubectl exec -it alice -- /bin/bash
 
 From here on you can now follow the Demo file and test it yourself.
+
+
+# Kubernetes Deployment
+
+For our Kubernetes deployment we used Docker-Desktop. It's a very easy to use tool that provides the ability to deploy a one node cluster locally.
+A guide on how to install Docker-Desktop on your machine can be found here: https://www.docker.com/products/docker-desktop/
+
+
+# Contributions
+
+- **[Vasilis Anagnostou, Stavros Lyronis]**:  Authentication service, UI service, Monitoring Service, Workers, Deployment on Kubernetes
+- **[Panagiotis Mihas]**: Fault tolerance - Zookeeper

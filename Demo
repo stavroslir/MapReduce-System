@@ -12,10 +12,10 @@ This command sends a POST request to the /register endpoint of the UI Service wi
     curl -X DELETE -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg4OTQ2MjMsImV4cCI6MTY4ODg5NjQyM30.uIrSoJTjoI0bjiXTzwTCffxkI872yWFFBq7GYh0STP4" http://ui-service/delete_user/new_user
 
 # Register a worker: (admin only)
-    curl -X POST -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg4OTM0OTUsImV4cCI6MTY4ODg5NTI5NX0.WswoFZPlvLPUbOpmFnA_duxE_SbUmASwntApjZYd7gM" -d '{}' http://ui-service/register_worker
+    curl -X POST -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg5ODQxNjksImV4cCI6MTY4ODk4NTk2OX0.8aiHx_eTX87iAc78ztcd09BDDDsTNUoiTWhriiP3a3A" -d '{}' http://ui-service/register_worker
 
 # De-register a worker: (admin only)                                                              
-    curl -X POST -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg4ODk3NzYsImV4cCI6MTY4ODg5MTU3Nn0.LvnOtNM0-xEeJ-8rM2i9j2x31fPp6aLpkFD4hCdw1WI" -d '{"worker_id": "1"}' http://ui-service/deregister_worker
+    curl -X POST -H "Content-Type: application/json" -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg5ODQxNjksImV4cCI6MTY4ODk4NTk2OX0.8aiHx_eTX87iAc78ztcd09BDDDsTNUoiTWhriiP3a3A" -d '{"worker_id": "1"}' http://ui-service/deregister_worker
 
 # Login as a user:
     curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"adminpassword"}' http://ui-service/login
@@ -26,7 +26,7 @@ This is the token you will use for evere request you do as this user.
 # Create a job:
     curl -X POST \
     -H "Content-Type: application/json" \
-    -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg4OTIxNDQsImV4cCI6MTY4ODg5Mzk0NH0._vrTz_D-AXmjdE6MQk3JDQD0FfhLEwxiTmSbOwGRwzQ" \
+    -H "x-access-tokens: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE2ODg5ODQxNjksImV4cCI6MTY4ODk4NTk2OX0.8aiHx_eTX87iAc78ztcd09BDDDsTNUoiTWhriiP3a3A" \
     -d '{
         "user_id": "1",
         "function_file": "/app/shared/functions.py",

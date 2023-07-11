@@ -1,5 +1,5 @@
 # Define the name of the image you want to build
-IMAGE_NAME = monitor
+IMAGE_NAME = monitoring-k8s
 
 # Define the version for the docker image
 VERSION = latest
@@ -17,11 +17,12 @@ build:
 
 # This target runs the Docker image, in case you want to execute it as well
 run:
-	docker run -p $(HOST_PORT):$(CONTAINER_PORT) $(IMAGE_NAME):$(VERSION)
+	docker run -v /Users/stavroslironis/Desktop/MapReduce-System/shared:/app/shared -p $(HOST_PORT):$(CONTAINER_PORT) $(IMAGE_NAME):$(VERSION)
 
 # This target pushes the Docker image to DockerHub
 push:
-	docker push $(IMAGE_NAME):$(VERSION)
+	docker tag $(IMAGE_NAME):$(VERSION) localhost:5004/$(IMAGE_NAME):$(VERSION)
+	docker push localhost:5004/$(IMAGE_NAME):$(VERSION)
 
 # This target removes the Docker image from your local Docker repository
 clean:
